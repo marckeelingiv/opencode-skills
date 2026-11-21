@@ -12,6 +12,18 @@ pi          = "~/.pi/agent/skills"
 grill-with-docs               = ["grilling", "domain-modeling"]
 improve-codebase-architecture = ["codebase-design", "grilling"]
 
+[policy]
+orca_skills = ["orca-cli", "orchestration"]
+omarchy_prefixes = ["/usr/share/omarchy"]
+system_entries = [".system"]
+shared_dirs = ["~/.agents/skills", "~/.gemini/skills"]
+strict_shared_dirs = ["~/.agents/skills"]
+claude_skills_dir = "~/.claude/skills"
+leak_configs = [
+  { path = "~/.gemini/config/skills.json", keys = ["entries", "inherits"] },
+  { path = "~/.config/opencode/opencode.json", keys = ["skills"] },
+]
+
 #                                  cdx agy oc  cld pi
 [skills."imported/matt-pocock"]
 codebase-design               = [  0,  1,  1,  0,  0 ]
@@ -48,3 +60,21 @@ ponytail                      = [  1,  1,  1,  0,  1 ]
 omarchy-theme                 = [  0,  0,  0,  1,  0 ]
 orchestrate                   = [  0,  1,  1,  0,  0 ]
 ynab-amazon-categorize        = [  0,  0,  1,  0,  0 ]
+
+#                                  cdx agy oc  cld pi
+[skills."imported/superpowers"]
+brainstorming                  = [  0,  0,  0,  0,  0 ]
+diagnosing-superpowers         = [  0,  0,  0,  0,  0 ]
+dispatching-parallel-agents    = [  0,  0,  0,  0,  0 ]
+executing-plans                = [  0,  0,  0,  0,  0 ]
+finishing-a-development-branch = [  0,  0,  0,  0,  0 ]
+receiving-code-review          = [  0,  0,  0,  0,  0 ]
+requesting-code-review         = [  0,  0,  0,  0,  0 ]
+subagent-driven-development    = [  0,  0,  0,  0,  0 ]
+systematic-debugging           = [  0,  0,  0,  0,  0 ]
+test-driven-development        = [  0,  0,  0,  0,  0 ]
+using-git-worktrees            = [  0,  0,  0,  0,  0 ]
+using-superpowers              = [  0,  0,  0,  0,  0 ]
+verification-before-completion = [  0,  0,  0,  0,  0 ]
+writing-plans                  = [  0,  0,  0,  0,  0 ]
+writing-skills                 = [  0,  0,  0,  0,  0 ]

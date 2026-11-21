@@ -1,5 +1,7 @@
 # Upstream provenance
 
+Machine-readable upstream source definitions, commit pins, update modes, and path mappings live in [upstreams.toml](upstreams.toml).
+
 ## Herdr
 
 - Source: https://github.com/herdrdev/herdr
@@ -54,9 +56,18 @@ Pstack playbook mentions in `benchmark-checklist` are contextual references, not
 
 ## Adopted local skills (`skills/imported/misc/`)
 
-These skills were adopted from local installations in `~/.agents/skills/` without upstream commit history recorded locally:
+These skills were adopted from local installations in `~/.agents/skills/` without upstream commit history recorded locally; their upstream GitHub repositories are tracked in [upstreams.toml](upstreams.toml):
 
-- `skills/imported/misc/browser-use`: copied from `~/.agents/skills/browser-use/SKILL.md`. References `https://github.com/browser-use/browser-harness` in its instructions; no local commit hash or license file present.
-- `skills/imported/misc/find-skills`: copied from `~/.agents/skills/find-skills/SKILL.md`. References `npx skills` and `https://skills.sh/` in its instructions; no local commit hash or license file present.
-- `skills/imported/misc/graphify`: copied from `~/.agents/skills/graphify/` (`SKILL.md`, `BUILD.md`, `references/`, `.graphify_version` = `0.9.100`). No local commit hash or license file present.
-- `skills/imported/misc/ponytail`: copied from `~/.agents/skills/ponytail/SKILL.md`. Frontmatter declares `license: MIT`; no local repository URL or commit hash present.
+- `skills/imported/misc/browser-use`: copied from `~/.agents/skills/browser-use/SKILL.md`. Upstream repo: `https://github.com/browser-use/browser-use` (`skills/browser-use`); no local commit hash or license file present, coupled to local `browser-use` CLI.
+- `skills/imported/misc/find-skills`: copied from `~/.agents/skills/find-skills/SKILL.md`. Upstream repo: `https://github.com/vercel-labs/skills` (`skills/find-skills`); no local commit hash or license file present.
+- `skills/imported/misc/graphify`: copied from `~/.agents/skills/graphify/` (`SKILL.md`, `BUILD.md`, `references/`, `.graphify_version` = `0.9.100`). Upstream repo: `https://github.com/Graphify-Labs/graphify` (`v8` branch, `graphify/skill-agents.md` and `graphify/skills/agents/references`); tracked in `notify` mode because the skill is assembled by the local `graphify` CLI.
+- `skills/imported/misc/ponytail`: copied from `~/.agents/skills/ponytail/SKILL.md`. Upstream repo: `https://github.com/DietrichGebert/ponytail` (`skills/ponytail`); frontmatter declares `license: MIT`, no local commit hash present.
+
+## Obra superpowers skills
+
+- Source: https://github.com/obra/superpowers
+- Commit: `22f0b463e7a5e579904dd6211a520321035526f7`
+- License: MIT; upstream license retained in `licenses/superpowers-MIT.txt`.
+- Source mapping: `skills/<id>/` → `skills/imported/superpowers/<id>/`.
+- Selected IDs: `brainstorming`, `diagnosing-superpowers`, `dispatching-parallel-agents`, `executing-plans`, `finishing-a-development-branch`, `receiving-code-review`, `requesting-code-review`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`, `using-git-worktrees`, `using-superpowers`, `verification-before-completion`, `writing-plans`, `writing-skills`.
+- Local modifications to imported files: none.

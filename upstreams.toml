@@ -1,0 +1,121 @@
+[sources.matt-pocock]
+repo = "mattpocock/skills"
+ref = "main"
+commit = "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d"
+group = "imported/matt-pocock"
+mode = "mirror"
+watch_roots = ["skills"]
+license_path = "LICENSE"
+license_dest = "LICENSE"
+
+[sources.matt-pocock.skills]
+codebase-design = "skills/engineering/codebase-design"
+domain-modeling = "skills/engineering/domain-modeling"
+grill-with-docs = "skills/engineering/grill-with-docs"
+grilling = "skills/productivity/grilling"
+handoff = "skills/productivity/handoff"
+improve-codebase-architecture = "skills/engineering/improve-codebase-architecture"
+retro = "skills/engineering/retro"
+teach = "skills/productivity/teach"
+wizard = "skills/engineering/wizard"
+writing-for-agents = "skills/productivity/writing-for-agents"
+
+[sources.pstack]
+repo = "cursor/plugins"
+ref = "main"
+commit = "2776ddd2355d6d6c8747d3964600f28daf62f049"
+group = "imported/pstack"
+mode = "adapted"
+notes = "Five skills carry OpenCode adaptations documented in UPSTREAM.md; benchmark-checklist and unslop are unchanged upstream."
+
+[sources.pstack.skills]
+benchmark-checklist = "pstack/skills/benchmark-checklist"
+create-verification-skill = "pstack/skills/create-verification-skill"
+how = "pstack/skills/how"
+maintain-verification-skill = "pstack/skills/maintain-verification-skill"
+show-me-your-work = "pstack/skills/show-me-your-work"
+unslop = "pstack/skills/unslop"
+why = "pstack/skills/why"
+
+[sources.herdr]
+repo = "herdrdev/herdr"
+ref = "master"
+commit = "ee5bfb5041bb3e4a49d591c72308aae3c81ecdde"
+group = "imported/misc"
+mode = "mirror"
+license_path = "LICENSE"
+license_dest = "licenses/herdr-Apache-2.0.txt"
+notes = "Coupled to local herdr binary."
+
+[sources.herdr.skills]
+herdr = "skills/herdr"
+
+[sources.browser-use]
+repo = "browser-use/browser-use"
+ref = "main"
+commit = ""
+group = "imported/misc"
+mode = "mirror"
+notes = "Adopted locally without commit SHA; coupled to local browser-use CLI (uv tool)."
+
+[sources.browser-use.skills]
+browser-use = "skills/browser-use"
+
+[sources.find-skills]
+repo = "vercel-labs/skills"
+ref = "main"
+commit = ""
+group = "imported/misc"
+mode = "mirror"
+
+[sources.find-skills.skills]
+find-skills = "skills/find-skills"
+
+[sources.ponytail]
+repo = "DietrichGebert/ponytail"
+ref = "main"
+commit = ""
+group = "imported/misc"
+mode = "mirror"
+watch_roots = ["skills"]
+
+[sources.ponytail.skills]
+ponytail = "skills/ponytail"
+
+[sources.graphify]
+repo = "Graphify-Labs/graphify"
+ref = "v8"
+commit = ""
+group = "imported/misc"
+mode = "notify"
+notes = "Skill is assembled by graphify CLI; verify local graphify binary version before updating."
+
+[sources.graphify.skills]
+graphify = ["graphify/skill-agents.md", "graphify/skills/agents/references"]
+
+[sources.superpowers]
+repo = "obra/superpowers"
+ref = "main"
+commit = "22f0b463e7a5e579904dd6211a520321035526f7"
+group = "imported/superpowers"
+mode = "mirror"
+watch_roots = ["skills"]
+license_path = "LICENSE"
+license_dest = "licenses/superpowers-MIT.txt"
+
+[sources.superpowers.skills]
+brainstorming = "skills/brainstorming"
+diagnosing-superpowers = "skills/diagnosing-superpowers"
+dispatching-parallel-agents = "skills/dispatching-parallel-agents"
+executing-plans = "skills/executing-plans"
+finishing-a-development-branch = "skills/finishing-a-development-branch"
+receiving-code-review = "skills/receiving-code-review"
+requesting-code-review = "skills/requesting-code-review"
+subagent-driven-development = "skills/subagent-driven-development"
+systematic-debugging = "skills/systematic-debugging"
+test-driven-development = "skills/test-driven-development"
+using-git-worktrees = "skills/using-git-worktrees"
+using-superpowers = "skills/using-superpowers"
+verification-before-completion = "skills/verification-before-completion"
+writing-plans = "skills/writing-plans"
+writing-skills = "skills/writing-skills"

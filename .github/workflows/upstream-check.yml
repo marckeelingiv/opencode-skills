@@ -1,0 +1,199 @@
+name: Upstream Skill Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Optional upstream source ID to check and update'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  upstream-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Validate repository baseline
+        run: |
+          uv run python scripts/skills.py validate
+          uv run python -m unittest discover -s tests -v
+
+      - name: Check and update upstream skills
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SOURCE_ARGS=()
+          if [ -n "${{ inputs.source }}" ]; then
+            SOURCE_ARGS=("${{ inputs.source }}")
+          fi
+          uv run python scripts/skills.py upstream check --json "${SOURCE_ARGS[@]}" > /tmp/upstream-check.json
+          uv run python scripts/skills.py upstream update --json "${SOURCE_ARGS[@]}" > /tmp/upstream-update.json
+
+      - name: Re-validate repository after updates
+        run: |
+          uv run python scripts/skills.py validate
+          uv run python -m unittest discover -s tests -v
+
+      - name: Format summary and detect review items
+        id: summary
+        run: |
+          uv run python - <<'PY'
+          import json
+          from pathlib import Path
+
+          def load_items(path: str) -> list[dict]:
+              raw = json.loads(Path(path).read_text(encoding="utf-8"))
+              if isinstance(raw, list):
+                  return raw
+              if isinstance(raw, dict):
+                  return raw.get("items", [])
+              return []
+
+          checks = load_items("/tmp/upstream-check.json")
+          updates = load_items("/tmp/upstream-update.json")
+
+          applied = [u for u in updates if u.get("action") == "updated"]
+          adapted = [u for u in updates if u.get("action") in ("diff_only", "merge_conflicts")]
+          notify = [u for u in updates if u.get("action") == "notify_only"]
+          errors = [u for u in updates if u.get("action") == "error"]
+
+          new_skills: list[tuple[str, str, str]] = []
+          for c in checks:
+              sid = c.get("source_id", "")
+              repo = c.get("repo", "")
+              for path in c.get("new_upstream_skills") or []:
+                  new_skills.append((sid, repo, path))
+
+          lines: list[str] = ["## Upstream Skill Sync Summary", ""]
+
+          if applied:
+              lines.append("### Applied Mirror Updates")
+              for u in applied:
+                  old_sha = (u.get("old_commit") or "unpinned")[:12]
+                  new_sha = (u.get("new_commit") or "")[:12]
+                  skills = ", ".join(u.get("updated_skills") or [])
+                  lines.append(
+                      f"- `{u['source_id']}` ({u['repo']}): `{old_sha}` -> `{new_sha}` ({skills})"
+                  )
+              lines.append("")
+
+          if adapted:
+              lines.append("### Adapted Sources Requiring Manual Merge")
+              for u in adapted:
+                  old_sha = (u.get("old_commit") or "")[:12]
+                  new_sha = (u.get("new_commit") or "")[:12]
+                  skills = ", ".join(u.get("updated_skills") or [])
+                  lines.append(
+                      f"- `{u['source_id']}` ({u['repo']}): `{old_sha}` -> `{new_sha}` ({skills})"
+                  )
+                  diff = (u.get("diff") or "").strip()
+                  if diff:
+                      if len(diff) > 12000:
+                          diff = diff[:12000] + "\n... (diff truncated)"
+                      lines.extend([
+                          "  <details><summary>Upstream diff</summary>",
+                          "",
+                          "  ```diff",
+                          *[f"  {ln}" for ln in diff.splitlines()],
+                          "  ```",
+                          "  </details>",
+                      ])
+              lines.append("")
+
+          if notify:
+              lines.append("### Notify-Only Upstream Alerts")
+              for u in notify:
+                  old_sha = (u.get("old_commit") or "unpinned")[:12]
+                  new_sha = (u.get("new_commit") or "")[:12]
+                  skills = ", ".join(u.get("updated_skills") or [])
+                  lines.append(
+                      f"- `{u['source_id']}` ({u['repo']}): `{old_sha}` -> `{new_sha}` ({skills})"
+                  )
+                  for c in (u.get("commits") or [])[:10]:
+                      lines.append(f"  - `{c.get('sha', '')}` {c.get('message', '')}")
+              lines.append("")
+
+          if new_skills:
+              lines.append("### New Upstream Skills Discovered")
+              for sid, repo, path in new_skills:
+                  label = path or "."
+                  path_arg = path or "."
+                  lines.append(
+                      f"- `{sid}` (`{label}`): "
+                      f"`uv run python scripts/skills.py upstream add {repo} --path {path_arg} --source-id {sid}`"
+                  )
+              lines.append("")
+
+          if errors:
+              lines.append("### Errors")
+              for u in errors:
+                  lines.append(f"- `{u['source_id']}`: {u.get('error')}")
+              lines.append("")
+
+          if len(lines) == 2:
+              lines.append("All tracked upstream sources are up to date.")
+
+          Path("/tmp/upstream-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+          has_review = bool(adapted or notify or new_skills)
+          with open("/tmp/has_review", "w", encoding="utf-8") as fh:
+              fh.write("true" if has_review else "false")
+          PY
+          echo "has_review=$(cat /tmp/has_review)" >> "$GITHUB_OUTPUT"
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "dirty=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dirty=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create or update automation PR
+        if: steps.summary.outputs.dirty == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B chore/upstream-skill-updates
+          git add -A
+          git commit -m "chore(skills): update mirrored upstream skills"
+          git push --force origin chore/upstream-skill-updates
+
+          PR_NUM=$(gh pr list --head chore/upstream-skill-updates --state open --json number --jq '.[0].number // empty')
+          if [ -n "$PR_NUM" ]; then
+            gh pr edit "$PR_NUM" \
+              --title "chore(skills): upstream skill updates" \
+              --body-file /tmp/upstream-summary.md
+          else
+            gh pr create \
+              --head chore/upstream-skill-updates \
+              --title "chore(skills): upstream skill updates" \
+              --body-file /tmp/upstream-summary.md
+          fi
+
+      - name: Create or update manual review issue
+        if: steps.summary.outputs.dirty == 'false' && steps.summary.outputs.has_review == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="Upstream skill updates available (manual review)"
+          ISSUE_NUM=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n 1)
+          if [ -n "$ISSUE_NUM" ]; then
+            gh issue edit "$ISSUE_NUM" --body-file /tmp/upstream-summary.md
+          else
+            gh issue create --title "$TITLE" --body-file /tmp/upstream-summary.md
+          fi
