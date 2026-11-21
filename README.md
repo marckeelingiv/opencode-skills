@@ -1,44 +1,58 @@
-# Personal OpenCode skills
+# Personal multi-harness skills
 
-User-scoped skills for OpenCode, selected from [Matt Pocock's skills](https://github.com/mattpocock/skills) and [Cursor's pstack](https://github.com/cursor/plugins/tree/main/pstack). See [UPSTREAM.md](UPSTREAM.md) for provenance, [LICENSE](LICENSE) for Matt Pocock's MIT license, and [pstack's MIT license](licenses/pstack-MIT.txt).
+Single-source repository for user-scoped agent skills deployed across Codex, Antigravity, OpenCode, Claude Code, and Pi via per-skill symlinks.
 
-## Included skills
+See [UPSTREAM.md](UPSTREAM.md) for provenance, [LICENSE](LICENSE) for Matt Pocock's MIT license, [licenses/pstack-MIT.txt](licenses/pstack-MIT.txt) for Cursor pstack's MIT notice, and [licenses/herdr-Apache-2.0.txt](licenses/herdr-Apache-2.0.txt) for Herdr's Apache-2.0 license.
 
-- `wizard`
-- `grill-with-docs`
-- `improve-codebase-architecture`
-- `codebase-design`
-- `retro`
-- `teach`
-- `handoff`
-- Supporting skills: `grilling`, `domain-modeling`, `writing-for-agents`
+## Repository layout
 
-From pstack:
+- `skills/imported/matt-pocock/<id>/` — unmodified upstream copies from Matt Pocock's skills repository.
+- `skills/imported/pstack/<id>/` — selected skills from Cursor's `pstack` plugin with documented OpenCode adaptations.
+- `skills/imported/misc/<id>/` — standalone third-party/adopted skills (`browser-use`, `find-skills`, `graphify`, `herdr`, `ponytail`).
+- `skills/custom/<id>/` — personal skills (`omarchy-theme`, `orchestrate`, `ynab-amazon-categorize`).
+- `skills.toml` — declarative enablement matrix, target directories, and `[requires]` dependency rules.
+- `scripts/skills.py` — validation, symlink sync, status, and live discovery verification tool.
 
-- `benchmark-checklist`
-- `create-verification-skill`
-- `maintain-verification-skill`
-- `show-me-your-work`
-- `how`
-- `why`
-- `unslop`
+## `skills.toml` manifest
 
-All seven pstack skills retain manual-only discovery settings. Invoke them by ID, for example `@how` or `@benchmark-checklist`. Skills can explicitly load other registered skills even when those skills are hidden from automatic discovery.
+`skills.toml` maps each skill group under `skills/<group>/` to a binary row aligned with `columns`:
 
-## Install for your OpenCode user
+```toml
+columns = ["codex", "antigravity", "opencode", "claude", "pi"]
 
-Clone this repository to `~/dev/opencode-skills`. Add this entry to the `skills` array in `~/.config/opencode/opencode.json`, preserving other configuration:
+[targets]
+codex       = "~/.codex/skills"
+antigravity = "~/.gemini/config/skills"
+opencode    = "~/.config/opencode/skills"
+claude      = "~/.claude/skills"
+pi          = "~/.pi/agent/skills"
 
-```json
-"skills": ["~/dev/opencode-skills/skills"]
+#                  cdx agy oc  cld pi
+[skills."custom"]
+orchestrate      = [  0,  1,  1,  0,  0 ]
 ```
 
-This registers the skills across your OpenCode projects, without installing them in project directories or other agents' shared discovery directories. OpenCode reloads configuration automatically; `/reload` forces a refresh.
+- `1` links `<repo>/skills/<group>/<skill>` into the column's target directory; `0` leaves it unlinked (and removes any existing repo-owned symlink there).
+- `[requires]` declares prerequisite skills that must also be `1` for every column where the dependent skill is `1`.
+- To add a new harness column: append its key to `columns`, add its destination directory under `[targets]`, and append a `0` or `1` to every skill row.
 
-Invoke a skill by mentioning its ID, for example `@grill-with-docs` or `@retro`. Upstream's manual-only settings are preserved for `grill-with-docs`, `improve-codebase-architecture`, `retro`, `teach`, and `handoff`.
+## CLI usage
 
-## Maintenance
+Run from the canonical checkout (`~/dev/opencode-skills`):
 
-Matt Pocock's skill contents and supporting files are unmodified upstream copies, including optional `agents/openai.yaml` metadata. Selected pstack skills have documented OpenCode adaptations. OpenCode discovers the `SKILL.md` files. Changes here are independent of upstream and never update automatically.
+```bash
+uv run python scripts/skills.py status
+uv run python scripts/skills.py sync --dry-run
+uv run python scripts/skills.py sync
+uv run python scripts/skills.py verify
+uv run python scripts/skills.py verify --live-agy
+```
 
-To update, review upstream changes against the commit recorded in `UPSTREAM.md`, copy only the selected skill directories and their supporting files, and update provenance. Review new skill dependencies before accepting an update. Repository and agent instructions still take precedence over skill instructions.
+- `sync`: validates `skills.toml` and `SKILL.md` frontmatter, creates missing repo symlinks, updates drifted repo symlinks, unlinks disabled repo symlinks, and leaves unmanaged directories/foreign symlinks untouched. Refuses linked git worktrees unless `--allow-worktree` is passed.
+- `status`: prints the aligned matrix alongside any unmanaged entries per target and in `~/.agents/skills` / `~/.gemini/skills`.
+- `verify`: audits static links, config-file leaks, `~/.agents/skills` and `~/.gemini/skills` hygiene, and live Codex (`codex debug prompt-input`) and OpenCode (`opencode api skill.list`) discovery. Pass `--live-agy` to include live Antigravity discovery.
+
+## Host isolation policies
+
+- **`~/.agents/skills` is system-only**: reserved for OS/tool-managed skills (Omarchy links under `/usr/share/omarchy/...` and Orca skills `orca-cli` and `orchestration`). Do not install personal or adopted skills there, or multi-harness isolation breaks.
+- **Prevent Claude-to-OpenCode leakage**: set `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` in the shell environment so OpenCode does not read `~/.claude/skills` and load Claude-only skills (such as `omarchy-theme`).

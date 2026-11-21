@@ -1,0 +1,50 @@
+canonical_root = "~/dev/opencode-skills"
+columns = ["codex", "antigravity", "opencode", "claude", "pi"]
+
+[targets]
+codex       = "~/.codex/skills"
+antigravity = "~/.gemini/config/skills"
+opencode    = "~/.config/opencode/skills"
+claude      = "~/.claude/skills"
+pi          = "~/.pi/agent/skills"
+
+[requires]
+grill-with-docs               = ["grilling", "domain-modeling"]
+improve-codebase-architecture = ["codebase-design", "grilling"]
+
+#                                  cdx agy oc  cld pi
+[skills."imported/matt-pocock"]
+codebase-design               = [  0,  1,  1,  0,  0 ]
+domain-modeling               = [  0,  1,  1,  0,  0 ]
+grilling                      = [  0,  1,  1,  0,  0 ]
+grill-with-docs               = [  0,  1,  1,  0,  0 ]
+handoff                       = [  0,  1,  1,  0,  0 ]
+improve-codebase-architecture = [  0,  1,  1,  0,  0 ]
+retro                         = [  0,  1,  1,  0,  0 ]
+teach                         = [  0,  1,  1,  0,  0 ]
+wizard                        = [  0,  1,  1,  0,  0 ]
+writing-for-agents            = [  0,  1,  1,  0,  0 ]
+
+#                                  cdx agy oc  cld pi
+[skills."imported/pstack"]
+benchmark-checklist           = [  0,  0,  1,  0,  0 ]
+create-verification-skill     = [  0,  0,  1,  0,  0 ]
+how                           = [  0,  0,  1,  0,  0 ]
+maintain-verification-skill   = [  0,  0,  1,  0,  0 ]
+show-me-your-work             = [  0,  0,  1,  0,  0 ]
+unslop                        = [  0,  0,  1,  0,  0 ]
+why                           = [  0,  0,  1,  0,  0 ]
+
+#                                  cdx agy oc  cld pi
+[skills."imported/misc"]
+browser-use                   = [  1,  1,  1,  1,  1 ]
+find-skills                   = [  1,  1,  1,  0,  1 ]
+graphify                      = [  1,  1,  1,  0,  1 ]
+herdr                         = [  0,  1,  1,  0,  0 ]
+ponytail                      = [  1,  1,  1,  0,  1 ]
+
+#                                  cdx agy oc  cld pi
+[skills."custom"]
+omarchy-theme                 = [  0,  0,  0,  1,  0 ]
+orchestrate                   = [  0,  1,  1,  0,  0 ]
+ynab-amazon-categorize        = [  0,  0,  1,  0,  0 ]

@@ -1,5 +1,13 @@
 # Upstream provenance
 
+## Herdr
+
+- Source: https://github.com/herdrdev/herdr
+- Commit: `ee5bfb5041bb3e4a49d591c72308aae3c81ecdde`
+- Source mapping: `skills/herdr/SKILL.md` → `skills/imported/misc/herdr/SKILL.md`.
+- License: Apache-2.0; upstream license retained in `licenses/herdr-Apache-2.0.txt`.
+- Local modifications to imported files: none.
+
 ## Matt Pocock skills
 
 - Source: https://github.com/mattpocock/skills
@@ -7,20 +15,20 @@
 - License: MIT; upstream copyright and license retained in `LICENSE`.
 - Local modifications to imported files: none.
 
-## Source mapping
+### Source mapping
 
 | Local directory | Upstream directory |
 | --- | --- |
-| `skills/wizard` | `skills/engineering/wizard` |
-| `skills/grill-with-docs` | `skills/engineering/grill-with-docs` |
-| `skills/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` |
-| `skills/codebase-design` | `skills/engineering/codebase-design` |
-| `skills/retro` | `skills/engineering/retro` |
-| `skills/domain-modeling` | `skills/engineering/domain-modeling` |
-| `skills/grilling` | `skills/productivity/grilling` |
-| `skills/writing-for-agents` | `skills/productivity/writing-for-agents` |
-| `skills/teach` | `skills/productivity/teach` |
-| `skills/handoff` | `skills/productivity/handoff` |
+| `skills/imported/matt-pocock/wizard` | `skills/engineering/wizard` |
+| `skills/imported/matt-pocock/grill-with-docs` | `skills/engineering/grill-with-docs` |
+| `skills/imported/matt-pocock/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` |
+| `skills/imported/matt-pocock/codebase-design` | `skills/engineering/codebase-design` |
+| `skills/imported/matt-pocock/retro` | `skills/engineering/retro` |
+| `skills/imported/matt-pocock/domain-modeling` | `skills/engineering/domain-modeling` |
+| `skills/imported/matt-pocock/grilling` | `skills/productivity/grilling` |
+| `skills/imported/matt-pocock/writing-for-agents` | `skills/productivity/writing-for-agents` |
+| `skills/imported/matt-pocock/teach` | `skills/productivity/teach` |
+| `skills/imported/matt-pocock/handoff` | `skills/productivity/handoff` |
 
 All files in each selected upstream directory were copied, including templates, references, and agent metadata.
 
@@ -29,7 +37,7 @@ All files in each selected upstream directory were copied, including templates, 
 - Source: https://github.com/cursor/plugins/tree/main/pstack
 - Commit: `2776ddd2355d6d6c8747d3964600f28daf62f049`
 - License: MIT; original notice retained in `licenses/pstack-MIT.txt`.
-- Source mapping: `pstack/skills/<id>/` → `skills/<id>/`.
+- Source mapping: `pstack/skills/<id>/` → `skills/imported/pstack/<id>/`.
 - Selected IDs: `benchmark-checklist`, `create-verification-skill`, `maintain-verification-skill`, `show-me-your-work`, `how`, `why`, `unslop`.
 - All supporting files in the selected directories were included.
 
@@ -43,3 +51,12 @@ All files in each selected upstream directory were copied, including templates, 
 - `benchmark-checklist` and `unslop`: unchanged upstream contents.
 
 Pstack playbook mentions in `benchmark-checklist` are contextual references, not installed workflows. No pstack mode, model configuration, or other unselected skills are required by these adaptations. Existing repository instructions and permission boundaries take precedence.
+
+## Adopted local skills (`skills/imported/misc/`)
+
+These skills were adopted from local installations in `~/.agents/skills/` without upstream commit history recorded locally:
+
+- `skills/imported/misc/browser-use`: copied from `~/.agents/skills/browser-use/SKILL.md`. References `https://github.com/browser-use/browser-harness` in its instructions; no local commit hash or license file present.
+- `skills/imported/misc/find-skills`: copied from `~/.agents/skills/find-skills/SKILL.md`. References `npx skills` and `https://skills.sh/` in its instructions; no local commit hash or license file present.
+- `skills/imported/misc/graphify`: copied from `~/.agents/skills/graphify/` (`SKILL.md`, `BUILD.md`, `references/`, `.graphify_version` = `0.9.100`). No local commit hash or license file present.
+- `skills/imported/misc/ponytail`: copied from `~/.agents/skills/ponytail/SKILL.md`. Frontmatter declares `license: MIT`; no local repository URL or commit hash present.
