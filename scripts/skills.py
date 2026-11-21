@@ -1095,7 +1095,7 @@ def _check_v4_agy(manifest: Manifest, disk_skills: dict[str, SkillInfo]) -> list
     )
     try:
         proc = subprocess.run(
-            ["agy", "-p", "--disable-slash-commands", prompt],
+            ["agy", "--disable-slash-commands", f"-p={prompt}"],
             capture_output=True,
             text=True,
             timeout=60,

@@ -500,6 +500,74 @@ visible-skill = [1]
                 errs = skills._check_v2_codex(repo, manifest, disk_skills)
                 self.assertTrue(any("Duplicate Codex available skill" in e for e in errs), errs)
 
+    def test_v4_agy_cli_flags_and_filtering(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            repo = tmp_path / "repo"
+            t_agy = tmp_path / "agy"
+            repo.mkdir()
+            _write_skill(
+                repo,
+                "custom",
+                "auto-skill",
+                "---\nname: auto-skill\ndescription: auto\n---",
+            )
+            _write_skill(
+                repo,
+                "custom",
+                "manual-skill",
+                "---\nname: manual-skill\ndescription: manual\ndisable-model-invocation: true\n---",
+            )
+            _write_skill(
+                repo,
+                "custom",
+                "off-skill",
+                "---\nname: off-skill\ndescription: off\n---",
+            )
+            (repo / "skills.toml").write_text(
+                f'''canonical_root = "{repo}"
+columns = ["antigravity"]
+
+[targets]
+antigravity = "{t_agy}"
+
+[skills."custom"]
+auto-skill = [1]
+manual-skill = [1]
+off-skill = [0]
+''',
+                encoding="utf-8",
+            )
+            manifest = skills.load_manifest(repo)
+            disk_skills = {s.name: s for s in skills.discover_skills(repo)}
+
+            # auto-skill present, manual-skill (disable-model-invocation: true) omitted -> passes
+            with mock.patch("shutil.which", return_value="/usr/bin/agy"), mock.patch(
+                "subprocess.run",
+                return_value=mock.Mock(returncode=0, stdout="auto-skill\n", stderr=""),
+            ) as run_mock:
+                errs = skills._check_v4_agy(manifest, disk_skills)
+                self.assertEqual(errs, [])
+                cmd = run_mock.call_args[0][0]
+                self.assertEqual(cmd[:2], ["agy", "--disable-slash-commands"])
+                self.assertTrue(cmd[2].startswith("-p="))
+
+            # off-skill (antigravity=0) present -> fails
+            with mock.patch("shutil.which", return_value="/usr/bin/agy"), mock.patch(
+                "subprocess.run",
+                return_value=mock.Mock(returncode=0, stdout="auto-skill\noff-skill\n", stderr=""),
+            ):
+                errs = skills._check_v4_agy(manifest, disk_skills)
+                self.assertTrue(any("off-skill" in e and "antigravity=0" in e for e in errs), errs)
+
+            # auto-skill (antigravity=1) missing -> fails
+            with mock.patch("shutil.which", return_value="/usr/bin/agy"), mock.patch(
+                "subprocess.run",
+                return_value=mock.Mock(returncode=0, stdout="", stderr=""),
+            ):
+                errs = skills._check_v4_agy(manifest, disk_skills)
+                self.assertTrue(any("auto-skill" in e and "antigravity=1" in e for e in errs), errs)
+
 
 if __name__ == "__main__":
     unittest.main()
