@@ -61,7 +61,7 @@ These skills were adopted from local installations in `~/.agents/skills/` withou
 - `skills/imported/misc/browser-use`: copied from `~/.agents/skills/browser-use/SKILL.md`. Upstream repo: `https://github.com/browser-use/browser-use` (`skills/browser-use`); no local commit hash or license file present, coupled to local `browser-use` CLI.
 - `skills/imported/misc/find-skills`: copied from `~/.agents/skills/find-skills/SKILL.md`. Upstream repo: `https://github.com/vercel-labs/skills` (`skills/find-skills`); no local commit hash or license file present.
 - `skills/imported/misc/graphify`: copied from `~/.agents/skills/graphify/` (`SKILL.md`, `BUILD.md`, `references/`, `.graphify_version` = `0.9.100`). Upstream repo: `https://github.com/Graphify-Labs/graphify` (`v8` branch, `graphify/skill-agents.md` and `graphify/skills/agents/references`); tracked in `notify` mode because the skill is assembled by the local `graphify` CLI.
-- `skills/imported/misc/ponytail`: copied from `~/.agents/skills/ponytail/SKILL.md`. Upstream repo: `https://github.com/DietrichGebert/ponytail` (`skills/ponytail`); frontmatter declares `license: MIT`, no local commit hash present.
+- `skills/imported/misc/ponytail`: copied from `~/.agents/skills/ponytail/SKILL.md`. Upstream repo: `https://github.com/DietrichGebert/ponytail` (`skills/ponytail`); pinned to the matching upstream revision in upstreams.toml and adapted for per-agent activation.
 
 ## Obra superpowers skills
 

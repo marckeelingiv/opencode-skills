@@ -74,9 +74,10 @@ find-skills = "skills/find-skills"
 [sources.ponytail]
 repo = "DietrichGebert/ponytail"
 ref = "main"
-commit = ""
+commit = "b6c04480c03e8db2f035751d7c46289779ec3362"
 group = "imported/misc"
-mode = "mirror"
+mode = "adapted"
+notes = "Local trigger and persistence rules vary by harness."
 watch_roots = ["skills"]
 
 [sources.ponytail.skills]

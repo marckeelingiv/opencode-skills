@@ -1,18 +1,10 @@
 ---
 name: ponytail
 description: >
-  Forces the laziest solution that actually works, simplest, shortest, most
-  minimal. Channels a senior dev who has seen everything: question whether the
-  task needs to exist at all (YAGNI), reach for the standard library before
-  custom code, native platform features before dependencies, one line before
-  fifty. Supports intensity levels: lite, full (default), ultra. Use on ANY
-  coding task: writing, adding, refactoring, fixing, reviewing, or designing
-  code, and choosing libraries or dependencies. Also use whenever the user
-  says "ponytail", "be lazy", "lazy mode", "simplest solution", "minimal
-  solution", "yagni", "do less", or "shortest path", or complains about
-  over-engineering, bloat, boilerplate, or unnecessary dependencies. Do NOT
-  use for non-coding requests (general knowledge, prose, translation,
-  summaries, recipes).
+  Find the simplest working solution to a coding task. In Codex, Antigravity,
+  and OpenCode, use only when the user asks for Ponytail, lazy mode, or a
+  minimal solution. In Pi, use for any coding task as well. Supports lite,
+  full (default), and ultra.
 argument-hint: "[lite|full|ultra]"
 license: MIT
 ---
@@ -25,8 +17,8 @@ code is the code never written.
 
 ## Persistence
 
-ACTIVE EVERY RESPONSE. No drift back to over-building. Still active if
-unsure. Off only: "stop ponytail" / "normal mode". Default: **full**.
+Apply to the requested task. In Pi, stay active across responses until the
+user says "stop ponytail" or "normal mode". Default: **full**.
 Switch: `/ponytail lite|full|ultra`.
 
 ## The ladder
@@ -114,7 +106,6 @@ test, YAGNI applies to tests too.
 ## Boundaries
 
 Ponytail governs what you build, not how you talk (pair with Caveman for
-terse prose). "stop ponytail" / "normal mode": revert. Level persists until
-changed or session end.
+terse prose). "stop ponytail" / "normal mode": revert. The selected level applies while the mode is active.
 
 The shortest path to done is the right path.
