@@ -120,3 +120,17 @@ using-superpowers = "skills/using-superpowers"
 verification-before-completion = "skills/verification-before-completion"
 writing-plans = "skills/writing-plans"
 writing-skills = "skills/writing-skills"
+
+[sources.supabase]
+repo = "supabase/agent-skills"
+ref = "main"
+commit = "c9be0e931b7930f7d02126d04774d904c381e7d7"
+group = "imported/supabase"
+mode = "mirror"
+watch_roots = ["skills"]
+license_path = "LICENSE"
+license_dest = "licenses/supabase-MIT.txt"
+
+[sources.supabase.skills]
+supabase = "skills/supabase"
+supabase-postgres-best-practices = "skills/supabase-postgres-best-practices"

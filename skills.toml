@@ -78,3 +78,8 @@ using-superpowers              = [  0,  0,  0,  0,  0 ]
 verification-before-completion = [  0,  0,  0,  0,  0 ]
 writing-plans                  = [  0,  0,  0,  0,  0 ]
 writing-skills                 = [  0,  0,  0,  0,  0 ]
+
+#                                    cdx agy oc  cld pi
+[skills."imported/supabase"]
+supabase                         = [  0,  0,  0,  0,  0 ]
+supabase-postgres-best-practices = [  0,  0,  0,  0,  0 ]
